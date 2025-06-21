@@ -25,10 +25,10 @@ app.use(bodyParser.json());
 // });
 
 const db = mysql.createConnection({
-  host: "sql8.freesqldatabase.com",
-  user: "sql8785241",
-  password: "TY4g55mxyW", // Your MySQL password
-  database: "sql8785241",
+  host: "sql12.freesqldatabase.com",
+  user: "sql12786047",
+  password: "G2c79E9hh8", // Your MySQL password
+  database: "sql12786047",
   port: 3306,
 });
 
