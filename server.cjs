@@ -23,12 +23,23 @@ app.use(bodyParser.json());
 //   database: 'otp_demo',
 // });
 
+// const db = mysql.createPool({
+//   host: "sql12.freesqldatabase.com",
+//   user: "sql12786047",
+//   password: "G2c79E9hh8", // Your MySQL password
+//   database: "sql12786047",
+//   port: 3306,
+//   waitForConnections: true,
+//   connectionLimit: 10,
+//   queueLimit: 0
+// });
+
 const db = mysql.createPool({
-  host: "sql12.freesqldatabase.com",
-  user: "sql12786047",
-  password: "G2c79E9hh8", // Your MySQL password
-  database: "sql12786047",
-  port: 3306,
+  host: process.env.DB_HOST,  // ✅ use env vars
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT),
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
