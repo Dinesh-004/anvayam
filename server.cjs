@@ -17,12 +17,21 @@ app.use(bodyParser.json());
 
 
 // ✅ MySQL DB Connection
+// const db = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: '1234', // Your MySQL password
+//   database: 'otp_demo',
+// });
+
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '1234', // Your MySQL password
-  database: 'otp_demo',
+  host: "sql8.freesqldatabase.com",
+  user: "sql8785241",
+  password: "TY4g55mxyW", // Your MySQL password
+  database: "sql8785241",
+  port: 3306,
 });
+
 
 db.connect((err) => {
   if (err) {
