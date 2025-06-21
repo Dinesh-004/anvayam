@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const twilio = require('twilio'); // ✅ THIS LINE IS MISSING
 
+require('dotenv').config();
+
 
 
 const app = express();
@@ -43,9 +45,14 @@ db.connect((err) => {
 //send otp
 
 
-const accountSid = 'ACb7d1489c18ec07b92a5b9b66ba8c374d';//AC2386df8e3b1afeae7dad935f23b51ab0
-const authToken = '580f6e330242027d935b885aa848deaf';//76b1d1984df91680aa99a778653fc462
-const twilioNumber = '+16085935230';//+12178035187
+// const accountSid = 'ACb7d1489c18ec07b92a5b9b66ba8c374d';//AC2386df8e3b1afeae7dad935f23b51ab0
+// const authToken = '580f6e330242027d935b885aa848deaf';//76b1d1984df91680aa99a778653fc462
+// const twilioNumber = '+16085935230';//+12178035187
+
+const accountSid = process.env.TWILIO_SID;
+const authToken = process.env.TWILIO_TOKEN;
+const twilioNumber = process.env.TWILIO_NUMBER;
+
 const client = twilio(accountSid, authToken);
 
 // Middleware
