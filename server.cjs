@@ -23,12 +23,15 @@ app.use(bodyParser.json());
 //   database: 'otp_demo',
 // });
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: "sql12.freesqldatabase.com",
   user: "sql12786047",
   password: "G2c79E9hh8", // Your MySQL password
   database: "sql12786047",
   port: 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 
