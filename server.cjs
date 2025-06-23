@@ -35,11 +35,11 @@ app.use(bodyParser.json());
 // });
 
 const db = mysql.createPool({
-  host: process.env.DB_HOST,  // ✅ use env vars
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  port: parseInt(process.env.DB_PORT),
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  port: process.env.MYSQL_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
