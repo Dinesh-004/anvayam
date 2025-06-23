@@ -45,14 +45,22 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 
-
-db.connect((err) => {
+db.getConnection((err, connection) => {
   if (err) {
     console.error('❌ Database connection error:', err);
   } else {
-    console.log('✅ Connected to MySQL');
+    console.log('✅ Connected to Railway MySQL');
+    connection.release();
   }
 });
+
+// db.connect((err) => {
+//   if (err) {
+//     console.error('❌ Database connection error:', err);
+//   } else {
+//     console.log('✅ Connected to MySQL');
+//   }
+// });
 //send otp
 
 
