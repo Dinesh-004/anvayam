@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const twilio = require('twilio'); // ✅ THIS LINE IS MISSING
+const crypto = require('crypto');
+const Razorpay = require('razorpay');
 
 require('dotenv').config();
 
@@ -73,6 +75,11 @@ const authToken = process.env.TWILIO_TOKEN;
 const twilioNumber = process.env.TWILIO_NUMBER;
 
 const client = twilio(accountSid, authToken);
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 // Middleware
 app.use(cors());
@@ -631,4 +638,36 @@ app.post('/reset-pin', (req, res) => {
       }
     res.json({ success: true, message: 'PIN reset successfully' });
   });
+});
+
+// Create payment order endpoint
+app.post('/create-order', async (req, res) => {
+  const { amount, currency = 'INR', receipt = 'receipt_001' } = req.body;
+
+  try {
+    const order = await razorpay.orders.create({
+      amount: amount * 100, // Amount in paise
+      currency,
+      receipt,
+    });
+
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Verify payment signature endpoint
+app.post('/verify-payment', (req, res) => {
+  const { order_id, payment_id, signature } = req.body;
+
+  const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
+  hmac.update(`${order_id}|${payment_id}`);
+  const digest = hmac.digest('hex');
+
+  if (digest === signature) {
+    res.json({ success: true });
+  } else {
+    res.status(400).json({ success: false, message: 'Signature verification failed' });
+  }
 });
