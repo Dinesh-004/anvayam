@@ -378,11 +378,19 @@ app.get('/api/questions/:month', (req, res) => {
         'social_development'
       ];
 
-      const questions = domains
-        .map(key => ({ domain: key, question: row[key] }))
-        .filter(q => !!q.question); // remove empty
+      // const questions = domains
+      //   .map(key => ({ domain: key, question: row[key] }))
+      //   .filter(q => !!q.question); // remove empty
 
-      res.json({ month, questions });
+      // res.json({ month, questions });
+
+      const questions = {};
+      domains.forEach(key => {
+        questions[key] = row[key];
+      });
+      questions['month'] = row['month'];
+      
+      res.json(questions);
     }
   );
 });
