@@ -362,7 +362,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
 app.get('/api/questions/:month', (req, res) => {
-  const month = req.params.month;
+  const month = `Month ${req.params.month}`;
   db.query(
     'SELECT * FROM child_development WHERE month = ?',
     [month],
@@ -388,7 +388,7 @@ app.get('/api/questions/:month', (req, res) => {
 });
 
 app.get('/api/questions_tamil/:month', (req, res) => {
-  const month = req.params.month;
+  const month = `Month ${req.params.month}`;
   db.query(
     'SELECT * FROM child_development_tamil WHERE month = ?',
     [month],
