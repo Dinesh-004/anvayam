@@ -387,6 +387,36 @@ app.get('/api/questions/:month', (req, res) => {
   );
 });
 
+app.get('/api/questions_tamil/:month', (req, res) => {
+  const month = req.params.month;
+  db.query(
+    'SELECT * FROM child_development_tamil WHERE month = ?',
+    [month],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: 'DB error' });
+      if (rows.length === 0) return res.status(404).json({ error: 'No tamil questions found' });
+
+      const row = rows[0];
+      const domains = [
+        'comprehension', 'verbal_expression', 'non_verbal_expression',
+        'physical_development', 'cognitive_development', 'fine_motor_skills',
+        'gross_motor_skills', 'emotional_development', 'swallowing_development',
+        'social_development'
+      ];
+
+      // Return as a flat object, matching your frontend expectation
+      const tamilQuestions = {};
+      domains.forEach(key => {
+        tamilQuestions[key] = row[key];
+      });
+
+      tamilQuestions['month'] = row['month'];
+
+      res.json(tamilQuestions);
+    }
+  );
+});
+
 //2
 // Inside server.js
 
