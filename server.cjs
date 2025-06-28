@@ -713,7 +713,7 @@ app.post('/verify-payment', (req, res) => {
 
 // Load client secrets from a local file
 const credentials = require('./client.apps.googleusercontent.com.json');
-const { client_id, client_secret, redirect_uris } = credentials.installed;
+const { client_id, client_secret, redirect_uris } = credentials.web;
 
 const oAuth2Client = new google.auth.OAuth2(
   client_id, client_secret, redirect_uris[0]
