@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -6,6 +5,8 @@ const mysql = require('mysql2');
 const twilio = require('twilio'); // ✅ THIS LINE IS MISSING
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
+const { google } = require('googleapis');
+const fs = require('fs');
 
 require('dotenv').config();
 
@@ -709,3 +710,53 @@ app.post('/verify-payment', (req, res) => {
     res.status(400).json({ success: false, message: 'Signature verification failed' });
   }
 });
+
+// Load client secrets from a local file
+const credentials = require('./client_secret_281101784262-hhehs58s54u24rkpeshn67j4gvm0mej9.apps.googleusercontent.com.json');
+const { client_id, client_secret, redirect_uris } = credentials.installed;
+
+const oAuth2Client = new google.auth.OAuth2(
+  client_id, client_secret, redirect_uris[0]
+);
+
+// Load previously stored token
+const TOKEN_PATH = 'token.json';
+if (fs.existsSync(TOKEN_PATH)) {
+  oAuth2Client.setCredentials(JSON.parse(fs.readFileSync(TOKEN_PATH)));
+} else {
+  // Manual step: run this code once to generate token.json
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: ['https://www.googleapis.com/auth/calendar'],
+  });
+  console.log('Authorize this app by visiting this url:', authUrl);
+  // After visiting the URL and authorizing, paste the code here and save the token as token.json
+  process.exit(1);
+}
+
+const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+
+app.post('/api/create_meet', async (req, res) => {
+  const { summary, startTime, endTime } = req.body;
+  try {
+    const event = {
+      summary,
+      start: { dateTime: startTime },
+      end: { dateTime: endTime },
+      conferenceData: {
+        createRequest: { requestId: Math.random().toString(36).substring(2) }
+      }
+    };
+    const response = await calendar.events.insert({
+      calendarId: 'primary',
+      resource: event,
+      conferenceDataVersion: 1,
+    });
+    res.json({ meetLink: response.data.hangoutLink });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Failed to create Google Meet' });
+  }
+});
+
+app.listen(5000, () => console.log('Server running on port 5000'));
