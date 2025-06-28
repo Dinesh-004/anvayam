@@ -732,7 +732,7 @@ if (fs.existsSync(TOKEN_PATH)) {
   });
   console.log('Authorize this app by visiting this url:', authUrl);
   // After visiting the URL and authorizing, paste the code here and save the token as token.json
-  process.exit(1);
+  //process.exit(1);
 }
 
 const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
