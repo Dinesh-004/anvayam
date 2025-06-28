@@ -727,7 +727,7 @@ if (fs.existsSync(TOKEN_PATH)) {
   // Manual step: run this code once to generate token.json
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
-    prompt: 'concent',
+    prompt: 'consent',
     scope: ['https://www.googleapis.com/auth/calendar'],
     redirect_uri: 'https://anvayam.onrender.com/oauth2callback'
   });
