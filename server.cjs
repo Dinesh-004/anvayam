@@ -768,6 +768,7 @@ app.get('/oauth2callback', async (req, res) => {
   });
   oAuth2Client.setCredentials(tokens);
   fs.writeFileSync('token.json', JSON.stringify(tokens));
+  print(tokens);
   res.send('Authorization successful! You can close this window.');
 });
 
