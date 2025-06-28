@@ -761,7 +761,10 @@ app.post('/api/create_meet', async (req, res) => {
       resource: event,
       conferenceDataVersion: 1,
     });
-    res.json({ meetLink: response.data.hangoutLink });
+    res.json({ 
+      meetLink: response.data.hangoutLink,
+      eventId: response.data.id
+     });
   } catch (e) {
   console.error('Google API error:', e.response?.data || e);
   res.status(500).json({ error: 'Failed to create Google Meet' });
@@ -778,6 +781,20 @@ app.get('/oauth2callback', async (req, res) => {
   fs.writeFileSync('token.json', JSON.stringify(tokens));
   console.log(tokens);
   res.send('Authorization successful! You can close this window.');
+});
+
+app.post('/api/delete_meet', async (req, res) => {
+  const { eventId } = req.body;
+  try {
+    await calendar.events.delete({
+      calendarId: 'primary',
+      eventId,
+    });
+    res.json({ success: true });
+  } catch (e) {
+    console.error('Failed to delete event:', e.response?.data || e);
+    res.status(500).json({ error: 'Failed to delete event' });
+  }
 });
 
 app.listen(5000, () => console.log('Server running on port 5000'));
