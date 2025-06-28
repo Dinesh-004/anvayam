@@ -725,13 +725,13 @@ if (fs.existsSync(TOKEN_PATH)) {
   oAuth2Client.setCredentials(JSON.parse(fs.readFileSync(TOKEN_PATH)));
 } else {
   // Manual step: run this code once to generate token.json
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    prompt: 'consent',
-    scope: ['https://www.googleapis.com/auth/calendar'],
-    redirect_uri: 'https://anvayam.onrender.com/oauth2callback'
-  });
-  console.log('Authorize this app by visiting this url:', authUrl);
+  // const authUrl = oAuth2Client.generateAuthUrl({
+  //   access_type: 'offline',
+  //   prompt: 'consent',
+  //   scope: ['https://www.googleapis.com/auth/calendar'],
+  //   redirect_uri: 'https://anvayam.onrender.com/oauth2callback'
+  // });
+  // console.log('Authorize this app by visiting this url:', authUrl);
   // After visiting the URL and authorizing, paste the code here and save the token as token.json
   //process.exit(1);
 }
