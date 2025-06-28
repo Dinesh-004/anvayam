@@ -743,8 +743,14 @@ app.post('/api/create_meet', async (req, res) => {
   try {
     const event = {
       summary,
-      start: { dateTime: startTime },
-      end: { dateTime: endTime },
+      start: { 
+        dateTime: startTime,
+        timeZone: 'Asia/Kolkata' 
+      },
+      end: { 
+        dateTime: endTime,
+        timeZone: 'Asia/Kolkata' 
+      },
       conferenceData: {
         createRequest: { requestId: Math.random().toString(36).substring(2) }
       }
