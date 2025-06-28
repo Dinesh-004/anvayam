@@ -748,6 +748,7 @@ app.post('/api/create_meet', async (req, res) => {
         createRequest: { requestId: Math.random().toString(36).substring(2) }
       }
     };
+    console.log('Creating event:', event);
     const response = await calendar.events.insert({
       calendarId: 'primary',
       resource: event,
@@ -755,9 +756,9 @@ app.post('/api/create_meet', async (req, res) => {
     });
     res.json({ meetLink: response.data.hangoutLink });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: 'Failed to create Google Meet' });
-  }
+  console.error('Google API error:', e.response?.data || e);
+  res.status(500).json({ error: 'Failed to create Google Meet' });
+}
 });
 
 app.get('/oauth2callback', async (req, res) => {
