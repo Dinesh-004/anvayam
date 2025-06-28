@@ -728,7 +728,7 @@ if (fs.existsSync(TOKEN_PATH)) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: ['https://www.googleapis.com/auth/calendar'],
-    redirect_uri: 'https://anvayam.onrender.com/oauth2callback'
+    redirect_uri: 'https://anvayam.onrender.com'
   });
   console.log('Authorize this app by visiting this url:', authUrl);
   // After visiting the URL and authorizing, paste the code here and save the token as token.json
@@ -764,7 +764,7 @@ app.get('/oauth2callback', async (req, res) => {
   const code = req.query.code;
   const { tokens } = await oAuth2Client.getToken({
     code,
-    redirect_uri: 'https://anvayam.onrender.com/oauth2callback'
+    redirect_uri: 'https://anvayam.onrender.com'
   });
   oAuth2Client.setCredentials(tokens);
   fs.writeFileSync('token.json', JSON.stringify(tokens));
