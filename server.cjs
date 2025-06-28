@@ -765,7 +765,7 @@ app.post('/api/create_meet', async (req, res) => {
       meetLink: response.data.hangoutLink,
       eventId: response.data.id
      });
-     console.log('Link : ',meetLink);
+     console.log('Link : ',response.data.hangoutLink);
   } catch (e) {
   console.error('Google API error:', e.response?.data || e);
   res.status(500).json({ error: 'Failed to create Google Meet' });
