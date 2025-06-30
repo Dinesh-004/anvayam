@@ -791,6 +791,7 @@ app.post('/api/delete_meet', async (req, res) => {
       calendarId: 'primary',
       eventId,
     });
+    console.log('Event Deleted');
     res.json({ success: true });
   } catch (e) {
     console.error('Failed to delete event:', e.response?.data || e);
