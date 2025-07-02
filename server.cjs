@@ -237,7 +237,7 @@ app.post('/store-mobile', (req, res) => {
         userExists: true
       });
     }
-
+ 
     const insertQuery = `INSERT INTO user_details (mobile_number, status) VALUES (?, 'pending')`;
     db.query(insertQuery, [mobileNumber], (insertErr) => {
       if (insertErr) {
