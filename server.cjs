@@ -337,13 +337,13 @@ app.post('/store-user-details', (req, res) => {
 
 // ✅ 3. Set Security PIN (Plain Text Storage)
 app.post('/set-security-pin', (req, res) => {
-  const { mobileNumber, pin } = req.body;
+  const { mobileNumber, pin, deviceId} = req.body;
 
   if (!mobileNumber || !pin) {
     return res.status(400).json({ success: false, message: 'Mobile number and PIN are required' });
   }
 
-  const sql = `UPDATE user_details SET security_pin = ?, status = 'completed' WHERE mobile_number = ?`;
+  const sql = `UPDATE user_details SET security_pin = ?, status = 'completed', device_id = ?, WHERE mobile_number = ?`;
 
   db.query(sql, [pin, mobileNumber], (err, result) => {
     if (err) {
@@ -617,14 +617,14 @@ app.put('/api/questions/:id', (req, res) => {
 
 //security pin
 app.post('/api/verify-pin', (req, res) => {
-  const { mobileNumber, securityPIN } = req.body;
+  const { deviceId, securityPIN } = req.body;
 
-  if (!mobileNumber || !securityPIN) {
-    return res.status(400).json({ success: false, message: 'Mobile number and PIN required' });
+  if (!deviceId || !securityPIN) {
+    return res.status(400).json({ success: false, message: 'Id and PIN required' });
   }
 
-  const query = 'SELECT security_pin FROM user_details WHERE mobile_number = ?';
-  db.query(query, [mobileNumber], (err, results) => {
+  const query = 'SELECT security_pin FROM user_details WHERE device_Id = ?';
+  db.query(query, [deviceId], (err, results) => {
     if (err) {
       console.error('DB error:', err);
       return res.status(500).json({ success: false, message: 'Database error' });
