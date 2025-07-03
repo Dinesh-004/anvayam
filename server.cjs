@@ -339,13 +339,13 @@ app.post('/store-user-details', (req, res) => {
 app.post('/set-security-pin', (req, res) => {
   const { mobileNumber, pin, deviceId} = req.body;
 
-  if (!mobileNumber || !pin) {
-    return res.status(400).json({ success: false, message: 'Mobile number and PIN are required' });
+  if (!mobileNumber || !pin || !deviceId) {
+    return res.status(400).json({ success: false, message: 'Mobile number, PIN, and device ID are required' });
   }
 
   const sql = `UPDATE user_details SET security_pin = ?, status = 'completed', device_id = ? WHERE mobile_number = ?`;
 
-  db.query(sql, [pin, mobileNumber], (err, result) => {
+  db.query(sql, [pin, deviceId, mobileNumber], (err, result) => {
     if (err) {
       console.error('❌ PIN update error:', err);
       return res.status(500).json({ success: false, message: 'Database error' });
