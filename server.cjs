@@ -396,8 +396,8 @@ app.get('/api/questions/:month', (req, res) => {
   );
 });
 
-app.get('/get-user-details', (req, res) => {
-  const deviceId = req.query.deviceId;
+app.post('/get-user-details', (req, res) => {
+  const { deviceId } = req.body;
 
   if (!deviceId) {
     return res.status(400).json({ success: false, message: 'Device ID is required' });
@@ -418,6 +418,7 @@ app.get('/get-user-details', (req, res) => {
     res.json({ success: true, user: results[0] });
   });
 });
+
 
 
 app.get('/api/questions_tamil/:month', (req, res) => {
