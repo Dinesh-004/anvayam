@@ -270,7 +270,7 @@ app.post('/send-otp', (req, res) => {
 // ✅ 2. Update User Details
 app.post('/store-user-details', (req, res) => {
   const {
-    mobileNumber,
+    deviceId,
     fullName,
     gender,
     dob,
@@ -280,9 +280,9 @@ app.post('/store-user-details', (req, res) => {
     ageCategory
   } = req.body;
 
-  if (!mobileNumber) {
-    return res.status(400).json({ success: false, message: 'Mobile number is required' });
-  }
+  // if (!mobileNumber) {
+  //   return res.status(400).json({ success: false, message: 'Mobile number is required' });
+  // }
 
   const sql = `
     UPDATE user_details
@@ -294,7 +294,7 @@ app.post('/store-user-details', (req, res) => {
       school_id = ?, 
       aadhar_number = ?, 
       age_category = ?
-    WHERE mobile_number = ?
+    WHERE device_id = ?
   `;  //table change for unique okay
 //   const sql = `
 //   INSERT INTO user_details (
@@ -318,7 +318,7 @@ app.post('/store-user-details', (req, res) => {
     schoolId || null,
     aadharNumber || null,
     ageCategory,
-    mobileNumber
+    deviceId
   ];
 
   db.query(sql, values, (err, result) => {
