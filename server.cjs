@@ -396,6 +396,30 @@ app.get('/api/questions/:month', (req, res) => {
   );
 });
 
+app.get('/get-user-details', (req, res) => {
+  const deviceId = req.query.deviceId;
+
+  if (!deviceId) {
+    return res.status(400).json({ success: false, message: 'Device ID is required' });
+  }
+
+  const sql = `SELECT full_name, mobile_number FROM user_details WHERE device_id = ?`;
+
+  db.query(sql, [deviceId], (err, results) => {
+    if (err) {
+      console.error('❌ Database error:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, user: results[0] });
+  });
+});
+
+
 app.get('/api/questions_tamil/:month', (req, res) => {
   const month = `Month ${req.params.month}`;
   db.query(
