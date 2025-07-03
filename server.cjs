@@ -343,7 +343,7 @@ app.post('/set-security-pin', (req, res) => {
     return res.status(400).json({ success: false, message: 'Mobile number and PIN are required' });
   }
 
-  const sql = `UPDATE user_details SET security_pin = ?, status = 'completed', device_id = ?, WHERE mobile_number = ?`;
+  const sql = `UPDATE user_details SET security_pin = ?, status = 'completed', device_id = ? WHERE mobile_number = ?`;
 
   db.query(sql, [pin, mobileNumber], (err, result) => {
     if (err) {
