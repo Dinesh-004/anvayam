@@ -420,6 +420,30 @@ app.post('/get-user-details', (req, res) => {
 });
 
 
+app.post('/update-user-name', (req, res) => {
+  const { deviceId, fullName } = req.body;
+
+  if (!deviceId || !fullName) {
+    return res.status(400).json({ success: false, message: 'Device ID and full name are required' });
+  }
+
+  const sql = `UPDATE user_details SET full_name = ? WHERE device_id = ?`;
+
+  db.query(sql, [fullName, deviceId], (err, result) => {
+    if (err) {
+      console.error('❌ Database error:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, message: 'Name updated successfully' });
+  });
+});
+
+
 
 app.get('/api/questions_tamil/:month', (req, res) => {
   const month = `Month ${req.params.month}`;
