@@ -443,6 +443,51 @@ app.post('/update-user-name', (req, res) => {
   });
 });
 
+app.post('/update-profile-image', (req, res) => {
+  const { deviceId, imageBase64 } = req.body;
+
+  if (!deviceId || !imageBase64) {
+    return res.status(400).json({ success: false, message: 'Missing deviceId or imageBase64' });
+  }
+
+  const sql = `UPDATE user_details SET profile_image = ? WHERE device_id = ?`;
+
+  db.query(sql, [imageBase64, deviceId], (err, result) => {
+    if (err) {
+      console.error('❌ Error updating profile image:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, message: 'Profile image updated' });
+  });
+});
+
+app.post('/get-profile-image', (req, res) => {
+  const { deviceId } = req.body;
+
+  if (!deviceId) {
+    return res.status(400).json({ success: false, message: 'Device ID required' });
+  }
+
+  const sql = `SELECT profile_image FROM user_details WHERE device_id = ?`;
+
+  db.query(sql, [deviceId], (err, results) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, imageBase64: results[0].profile_image });
+  });
+});
+
 
 
 app.get('/api/questions_tamil/:month', (req, res) => {
