@@ -396,6 +396,41 @@ app.get('/api/questions/:month', (req, res) => {
   );
 });
 
+app.post('/api/save-order', (req, res) => {
+  const { products, address, paymentMethod, total } = req.body;
+
+  if (!Array.isArray(products) || products.length === 0) {
+    return res.status(400).json({ success: false, message: 'No products provided' });
+  }
+
+  // Prepare values for bulk insert
+  const values = products.map(product => [
+    product.id,
+    product.title,
+    product.variant,
+    product.unitPrice,
+    product.quantity,
+    product.lineTotal,
+    address,
+    paymentMethod,
+    total
+  ]);
+
+  const query = `
+    INSERT INTO orders 
+    (product_id, title, variant, unit_price, quantity, line_total, address, payment_method, total)
+    VALUES ?
+  `;
+
+  db.query(query, [values], (err, result) => {
+    if (err) {
+      console.error('Order save error:', err);
+      return res.status(500).json({ success: false, message: 'Server error' });
+    }
+    res.json({ success: true, message: 'Order saved successfully' });
+  });
+});
+
 app.post('/get-user-details', (req, res) => {
   const { deviceId } = req.body;
 
@@ -893,4 +928,4 @@ app.post('/api/delete_meet', async (req, res) => {
   }
 });
 
-app.listen(5000, () => console.log('Server running on port 5000'));
+
