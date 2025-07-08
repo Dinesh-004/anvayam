@@ -442,6 +442,65 @@ app.post('/api/save-order', (req, res) => {
   });
 });
 
+app.post('/save-session', (req, res) => {
+  const {
+    name,
+    sessionType,
+    sessiondate,
+    sessiontime,
+    meetLink,
+    eventId,
+    completed,
+    fullName,
+    age,
+    gender,
+  } = req.body;
+
+  // Validation
+  if (!name || !sessionType || !sessiondate || !sessiontime || !fullName) {
+    return res.status(400).json({ success: false, message: 'Missing required fields' });
+  }
+
+  const sql = `
+    INSERT INTO session_details (
+      name,
+      session_type,
+      session_date,
+      session_time,
+      meet_link,
+      event_id,
+      completed,
+      full_name,
+      age,
+      gender
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const values = [
+    name,
+    sessionType,
+    sessiondate,
+    sessiontime,
+    meetLink || '',
+    eventId || '',
+    completed ? 1 : 0,
+    fullName,
+    age || null,
+    gender || null,
+  ];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('❌ Error inserting session:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    res.json({ success: true, message: 'Session saved successfully' });
+  });
+});
+
+
+
 app.post('/get-user-details', (req, res) => {
   const { deviceId } = req.body;
 
