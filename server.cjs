@@ -403,31 +403,42 @@ app.post('/api/save-order', (req, res) => {
     return res.status(400).json({ success: false, message: 'No products provided' });
   }
 
-  // Prepare values for bulk insert
-  const values = products.map(product => [
-    product.id,
-    product.title,
-    product.variant,
-    product.unitPrice,
-    product.quantity,
-    product.lineTotal,
-    address,
-    paymentMethod,
-    total
-  ]);
-
-  const query = `
-    INSERT INTO orders 
-    (product_id, title, variant, unit_price, quantity, line_total, address, payment_method, total)
-    VALUES ?
+  // 1. Insert into orders table
+  const orderQuery = `
+    INSERT INTO orders (address, payment_method, total)
+    VALUES (?, ?, ?)
   `;
-
-  db.query(query, [values], (err, result) => {
-    if (err) {
-      console.error('Order save error:', err);
-      return res.status(500).json({ success: false, message: 'Server error' });
+  db.query(orderQuery, [address, paymentMethod, total], (orderErr, orderResult) => {
+    if (orderErr) {
+      console.error('Order insert error:', orderErr);
+      return res.status(500).json({ success: false, message: 'Server error (orders)' });
     }
-    res.json({ success: true, message: 'Order saved successfully' });
+    const orderId = orderResult.insertId;
+
+    // 2. Prepare values for order_items
+    const itemValues = products.map(product => [
+      orderId,
+      product.id,
+      product.title,
+      product.variant,
+      product.unitPrice,
+      product.quantity,
+      product.lineTotal
+    ]);
+
+    const itemsQuery = `
+      INSERT INTO order_items
+      (order_id, product_id, title, variant, unit_price, quantity, line_total)
+      VALUES ?
+    `;
+
+    db.query(itemsQuery, [itemValues], (itemsErr, itemsResult) => {
+      if (itemsErr) {
+        console.error('Order items insert error:', itemsErr);
+        return res.status(500).json({ success: false, message: 'Server error (order_items)' });
+      }
+      res.json({ success: true, message: 'Order saved successfully', orderId });
+    });
   });
 });
 
