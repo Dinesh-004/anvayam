@@ -499,11 +499,11 @@ app.post('/save-session', (req, res) => {
   });
 });
 
-app.get('/orders', (req, res) => {
-  const { deviceId } = req.query;
+app.post('/orders', (req, res) => {
+  const { deviceId } = req.body;
 
   if (!deviceId) {
-    return res.status(400).json({ error: 'deviceId is required' });
+    return res.status(400).json({ error: 'Device ID is required' });
   }
 
   const orderQuery = 'SELECT * FROM orders WHERE device_id = ? ORDER BY created_at DESC';
@@ -528,6 +528,7 @@ app.get('/orders', (req, res) => {
     });
   });
 });
+
 
 
 
