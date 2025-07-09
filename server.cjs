@@ -397,25 +397,23 @@ app.get('/api/questions/:month', (req, res) => {
 });
 
 app.post('/api/save-order', (req, res) => {
-  const { products, address, paymentMethod, total } = req.body;
+  const { products, address, paymentMethod, total, deviceId } = req.body;
 
   if (!Array.isArray(products) || products.length === 0) {
     return res.status(400).json({ success: false, message: 'No products provided' });
   }
 
-  // 1. Insert into orders table
   const orderQuery = `
-    INSERT INTO orders (address, payment_method, total)
-    VALUES (?, ?, ?)
+    INSERT INTO orders (address, payment_method, total, device_id)
+    VALUES (?, ?, ?, ?)
   `;
-  db.query(orderQuery, [address, paymentMethod, total], (orderErr, orderResult) => {
+  db.query(orderQuery, [address, paymentMethod, total, deviceId], (orderErr, orderResult) => {
     if (orderErr) {
       console.error('Order insert error:', orderErr);
       return res.status(500).json({ success: false, message: 'Server error (orders)' });
     }
-    const orderId = orderResult.insertId;
 
-    // 2. Prepare values for order_items
+    const orderId = orderResult.insertId;
     const itemValues = products.map(product => [
       orderId,
       product.id,
@@ -437,10 +435,12 @@ app.post('/api/save-order', (req, res) => {
         console.error('Order items insert error:', itemsErr);
         return res.status(500).json({ success: false, message: 'Server error (order_items)' });
       }
+
       res.json({ success: true, message: 'Order saved successfully', orderId });
     });
   });
 });
+
 
 app.post('/save-session', (req, res) => {
   const {
@@ -500,10 +500,16 @@ app.post('/save-session', (req, res) => {
 });
 
 app.get('/orders', (req, res) => {
-  const orderQuery = 'SELECT * FROM orders ORDER BY created_at DESC';
+  const { deviceId } = req.query;
+
+  if (!deviceId) {
+    return res.status(400).json({ error: 'deviceId is required' });
+  }
+
+  const orderQuery = 'SELECT * FROM orders WHERE device_id = ? ORDER BY created_at DESC';
   const itemsQuery = 'SELECT * FROM order_items';
 
-  db.query(orderQuery, (err, orders) => {
+  db.query(orderQuery, [deviceId], (err, orders) => {
     if (err) {
       return res.status(500).json({ error: 'Failed to fetch orders' });
     }
@@ -522,6 +528,7 @@ app.get('/orders', (req, res) => {
     });
   });
 });
+
 
 
 app.post('/get-user-details', (req, res) => {
