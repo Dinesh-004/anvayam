@@ -499,6 +499,29 @@ app.post('/save-session', (req, res) => {
   });
 });
 
+app.get('/orders', (req, res) => {
+  const orderQuery = 'SELECT * FROM orders ORDER BY created_at DESC';
+  const itemsQuery = 'SELECT * FROM order_items';
+
+  db.query(orderQuery, (err, orders) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to fetch orders' });
+    }
+
+    db.query(itemsQuery, (err, items) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to fetch order items' });
+      }
+
+      const result = orders.map((order) => {
+        const orderItems = items.filter((item) => item.order_id === order.order_id);
+        return { ...order, items: orderItems };
+      });
+
+      res.json(result);
+    });
+  });
+});
 
 
 app.post('/get-user-details', (req, res) => {
