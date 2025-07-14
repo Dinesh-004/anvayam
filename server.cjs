@@ -441,6 +441,14 @@ app.post('/api/save-order', (req, res) => {
   });
 });
 
+app.get('/products', (req, res) => {
+  const sql = 'SELECT * FROM products';
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
+
 
 app.post('/save-session', (req, res) => {
   const {
