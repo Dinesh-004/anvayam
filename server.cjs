@@ -462,11 +462,10 @@ app.post('/save-session', (req, res) => {
     fullName,
     age,
     gender,
-    deviceId,
   } = req.body;
 
   // Validation
-  if (!name || !sessionType || !sessiondate || !sessiontime || !fullName || !deviceId) {
+  if (!name || !sessionType || !sessiondate || !sessiontime || !fullName) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
 
@@ -481,9 +480,8 @@ app.post('/save-session', (req, res) => {
       completed,
       full_name,
       age,
-      gender,
-      device_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      gender
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
@@ -497,7 +495,6 @@ app.post('/save-session', (req, res) => {
     fullName,
     age || null,
     gender || null,
-    deviceId,
   ];
 
   db.query(sql, values, (err, result) => {
@@ -509,27 +506,6 @@ app.post('/save-session', (req, res) => {
     res.json({ success: true, message: 'Session saved successfully' });
   });
 });
-
-app.post('/get-sessions', (req, res) => {
-  const { deviceId } = req.body;
-
-  if (!deviceId) {
-    return res.status(400).json({ success: false, message: 'Missing deviceId' });
-  }
-
-  const sql = `SELECT * FROM session_details WHERE device_id = ? ORDER BY session_date DESC`;
-
-  db.query(sql, [deviceId], (err, results) => {
-    if (err) {
-      console.error('❌ Error fetching sessions:', err);
-      return res.status(500).json({ success: false, message: 'Database error' });
-    }
-
-    res.json({ success: true, sessions: results });
-  });
-});
-
-
 
 app.post('/orders', (req, res) => {
   const { deviceId } = req.body;
