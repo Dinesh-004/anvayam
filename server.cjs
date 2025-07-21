@@ -46,8 +46,6 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  connectTimeout: 10000,
-  idleTimeout: 60000
 });
 
 db.getConnection((err, connection) => {
