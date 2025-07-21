@@ -54,7 +54,7 @@ db.getConnection((err, connection) => {
   if (err) {
     console.error('❌ Database connection error:', err);
   } else {
-    console.log('✅ Connected to Railway MySQL');
+    console.log('✅ Connected to MySQL');
     connection.release();
   }
 });
