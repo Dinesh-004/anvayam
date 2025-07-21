@@ -45,7 +45,9 @@ const db = mysql.createPool({
   port: process.env.MYSQL_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  connectTimeout: 10000,
+  idleTimeout: 60000
 });
 
 db.getConnection((err, connection) => {
@@ -462,7 +464,7 @@ app.post('/save-session', (req, res) => {
     fullName,
     age,
     gender,
-    deviceId, // 🔹 NEW FIELD
+    deviceId,
   } = req.body;
 
   // Validation
