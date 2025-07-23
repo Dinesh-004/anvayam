@@ -877,32 +877,32 @@ app.put('/api/questions/:id', (req, res) => {
 
 
 //security pin
-app.post('/api/verify-pin', (req, res) => {
-  const { deviceId, securityPIN } = req.body;
+  app.post('/api/verify-pin', (req, res) => {
+    const { deviceId, securityPIN } = req.body;
 
-  if (!deviceId || !securityPIN) {
-    return res.status(400).json({ success: false, message: 'Id and PIN required' });
-  }
-
-  const query = 'SELECT security_pin FROM user_details WHERE device_Id = ?';
-  db.query(query, [deviceId], (err, results) => {
-    if (err) {
-      console.error('DB error:', err);
-      return res.status(500).json({ success: false, message: 'Database error' });
+    if (!deviceId || !securityPIN) {
+      return res.status(400).json({ success: false, message: 'Id and PIN required' });
     }
 
-    if (results.length === 0) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
+    const query = 'SELECT security_pin FROM user_details WHERE device_Id = ?';
+    db.query(query, [deviceId], (err, results) => {
+      if (err) {
+        console.error('DB error:', err);
+        return res.status(500).json({ success: false, message: 'Database error' });
+      }
 
-    const storedPin = results[0].security_pin;
-    if (securityPIN === storedPin) {
-      return res.json({ success: true, message: 'PIN verified' });
-    } else {
-      return res.json({ success: false, message: 'Incorrect PIN' });
-    }
+      if (results.length === 0) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      const storedPin = results[0].security_pin;
+      if (securityPIN === storedPin) {
+        return res.json({ success: true, message: 'PIN verified' });
+      } else {
+        return res.json({ success: false, message: 'Incorrect PIN' });
+      }
+    });
   });
-});
 
 // app.post('/verify-pin', (req, res) => {
 //   const { securityPIN } = req.body;
