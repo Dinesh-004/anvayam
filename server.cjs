@@ -885,6 +885,7 @@ app.put('/api/questions/:id', (req, res) => {
     }
 
     const query = 'SELECT security_pin FROM user_details WHERE device_Id = ?';
+    console.log(deviceId);
     db.query(query, [deviceId], (err, results) => {
       if (err) {
         console.error('DB error:', err);
